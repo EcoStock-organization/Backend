@@ -2,6 +2,7 @@ from rest_framework import serializers
 from .models import PerfilUsuario
 from .services import AuthService
 
+
 class UsuarioCompletoSerializer(serializers.ModelSerializer):
     username = serializers.CharField(write_only=True)
     password = serializers.CharField(write_only=True)
@@ -9,7 +10,7 @@ class UsuarioCompletoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = PerfilUsuario
-        fields = ['id', 'nome_completo', 'cargo', 'filial', 'ativo', 'username', 'password', 'email', 'usuario_id_auth']
+        fields = ['id', 'nome_completo', 'cpf', 'cargo', 'filial', 'ativo', 'username', 'password', 'email', 'usuario_id_auth']
         read_only_fields = ['usuario_id_auth']
 
     def create(self, validated_data):
