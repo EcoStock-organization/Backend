@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "estoque",
     "venda",
     "usuario",
+    "relatorios",
     "rest_framework_simplejwt",
 ]
 
