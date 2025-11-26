@@ -24,3 +24,20 @@ class AuthService:
                 
         except requests.exceptions.RequestException as e:
             raise APIException(detail=f"Falha de conexão com serviço de Auth: {str(e)}")
+        
+    @staticmethod
+    def deletar_usuario_auth(usuario_id_auth):
+        url = f"{AUTH_SERVICE_URL}/users/{usuario_id_auth}/"
+        
+        try:            
+            response = requests.delete(url)
+            
+            if response.status_code == 204:
+                return True
+            elif response.status_code == 404:
+                return True
+            else:
+                raise APIException(detail=f"Erro ao deletar no Auth: {response.text}")
+                
+        except requests.exceptions.RequestException as e:
+            raise APIException(detail=f"Falha de conexão com Auth: {str(e)}")

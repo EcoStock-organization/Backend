@@ -1,6 +1,6 @@
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import PerfilUsuario
 from .serializers import UsuarioCompletoSerializer
 from .services import AuthService
@@ -27,7 +27,7 @@ class CriarUsuarioView(generics.CreateAPIView):
                 usuario_id_auth=auth_user_id,
                 nome_completo=dados.get('nome'),
                 cpf=dados.get('cpf'),
-                cargo=dados.get('cargo', 'CAIXA'),
+                cargo=dados.get('cargo', 'OPERADOR'),
                 filial_id=dados.get('filial') 
             )
 
@@ -40,3 +40,13 @@ class CriarUsuarioView(generics.CreateAPIView):
                 {"detail": f"Erro ao criar usuário: {str(e)}"}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
+        
+class DetalheUsuarioView(generics.RetrieveDestroyAPIView):
+    queryset = PerfilUsuario.objects.all()
+    serializer_class = UsuarioCompletoSerializer
+    permission_classes = [IsAdminUser]
+
+    def perform_destroy(self, instance):
+        AuthService.deletar_usuario_auth(instance.usuario_id_auth)
+        
+        instance.delete()
