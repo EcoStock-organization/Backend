@@ -3,7 +3,7 @@ from rest_framework.exceptions import APIException
 import os
 
 
-AUTH_SERVICE_URL = os.getenv('AUTH_SERVICE_URL', 'http://auth_backend:8000/api')
+AUTH_SERVICE_URL = "http://auth-backend:8000/api"
 
 class AuthService:
     @staticmethod

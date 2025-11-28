@@ -47,3 +47,8 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  default:
+    name: ecostock-network
+    external: true
