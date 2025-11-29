@@ -12,14 +12,12 @@ from .serializers import (
     BuscaGlobalProdutoSerializer
 )
 
-
 class DashboardGeralView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = DashboardGeralSerializer
 
     def get(self, request):
         total_produtos = Produto.objects.filter(esta_ativo=True).count()
-        
         total_filiais = Filial.objects.filter(esta_ativa=True).count()
         
         valor_total_estoque = ItemEstoque.objects.aggregate(
@@ -69,10 +67,11 @@ class BuscaGlobalProdutoView(APIView):
         if not query:
             return Response({"erro": "Informe o parâmetro 'q'"}, status=status.HTTP_400_BAD_REQUEST)
 
+        # CORREÇÃO: Adicionado select_related('categoria')
         produtos = Produto.objects.filter(
             Q(nome__icontains=query) | Q(codigo_barras__icontains=query),
             esta_ativo=True
-        )
+        ).select_related('categoria')
 
         resultados = []
         for produto in produtos:
@@ -89,6 +88,8 @@ class BuscaGlobalProdutoView(APIView):
                 "id": produto.id,
                 "nome": produto.nome,
                 "codigo_barras": produto.codigo_barras,
+                # CORREÇÃO: Retornando o nome real da categoria
+                "categoria": produto.categoria.nome if produto.categoria else "Sem Categoria",
                 "disponibilidade": locais
             })
 

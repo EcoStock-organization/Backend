@@ -157,7 +157,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "SIGNING_KEY": os.environ.get("DJANGO_SECRET_KEY"),
+    "SIGNING_KEY": os.environ.get("DJANGO_SECRET_KEY", SECRET_KEY),
     "ALGORITHM": "HS256",
     "USER_ID_FIELD": "id",
     "USER_ID_CLAIM": "user_id",

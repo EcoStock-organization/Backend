@@ -1,17 +1,13 @@
 from decimal import Decimal
-
-from django.db import models
-
+from django.db import models, transaction
 from estoque.models import ItemEstoque
 from filial.models import Filial
 from produto.models import Produto
-
 
 class FormaPagamento(models.TextChoices):
     CARTAO = "CARTAO", "Cartão"
     DINHEIRO = "DINHEIRO", "Dinheiro"
     PIX = "PIX", "Pix"
-
 
 class Venda(models.Model):
     class StatusVenda(models.TextChoices):
@@ -44,17 +40,16 @@ class Venda(models.Model):
         self.save()
         return total
 
+    @transaction.atomic
     def finalizar_venda(self, forma: FormaPagamento):
         if self.status != self.StatusVenda.ABERTA:
             raise Exception("Esta venda não pode ser finalizada.")
 
-        self.forma_pagamento = forma
-        self.status = self.StatusVenda.FINALIZADA
-        self.calcular_valor_total()
-
+        # 1. Valida e Baixa Estoque PRIMEIRO
         for item_vendido in self.itens_venda.all():
             try:
-                item_em_estoque = ItemEstoque.objects.get(
+                # Bloqueia a linha do banco para evitar condição de corrida
+                item_em_estoque = ItemEstoque.objects.select_for_update().get(
                     filial=self.filial, produto=item_vendido.produto
                 )
 
@@ -69,15 +64,16 @@ class Venda(models.Model):
                     f"Produto {item_vendido.produto.nome} não encontrado no estoque desta filial."
                 )
 
-        self.save()
+        # 2. Se tudo deu certo, atualiza status da venda
+        self.forma_pagamento = forma
+        self.status = self.StatusVenda.FINALIZADA
+        self.calcular_valor_total()
 
-
+# --- A CLASSE ABAIXO HAVIA SIDO APAGADA ACIDENTALMENTE ---
 class ItemVenda(models.Model):
     venda = models.ForeignKey(Venda, on_delete=models.CASCADE, related_name="itens_venda")
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)
-
     quantidade_vendida = models.FloatField()
-
     preco_vendido = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):

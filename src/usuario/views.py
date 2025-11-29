@@ -21,9 +21,11 @@ class CriarUsuarioView(generics.CreateAPIView):
     """
     queryset = PerfilUsuario.objects.all()
     serializer_class = UsuarioCompletoSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated] # Ou [IsLocalAdmin] se apenas admin puder criar
 
-class DetalheUsuarioView(generics.RetrieveDestroyAPIView):
+# --- CORREÇÃO AQUI ---
+# Mudamos de RetrieveDestroyAPIView para RetrieveUpdateDestroyAPIView
+class DetalheUsuarioView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PerfilUsuario.objects.all()
     serializer_class = UsuarioCompletoSerializer
     permission_classes = [IsLocalAdmin]

@@ -25,4 +25,5 @@ class BuscaGlobalProdutoSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     nome = serializers.CharField()
     codigo_barras = serializers.CharField()
+    categoria = serializers.CharField()
     disponibilidade = DisponibilidadeFilialSerializer(many=True)
