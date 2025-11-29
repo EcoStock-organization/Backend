@@ -45,10 +45,8 @@ class Venda(models.Model):
         if self.status != self.StatusVenda.ABERTA:
             raise Exception("Esta venda não pode ser finalizada.")
 
-        # 1. Valida e Baixa Estoque PRIMEIRO
         for item_vendido in self.itens_venda.all():
             try:
-                # Bloqueia a linha do banco para evitar condição de corrida
                 item_em_estoque = ItemEstoque.objects.select_for_update().get(
                     filial=self.filial, produto=item_vendido.produto
                 )
@@ -64,12 +62,10 @@ class Venda(models.Model):
                     f"Produto {item_vendido.produto.nome} não encontrado no estoque desta filial."
                 )
 
-        # 2. Se tudo deu certo, atualiza status da venda
         self.forma_pagamento = forma
         self.status = self.StatusVenda.FINALIZADA
         self.calcular_valor_total()
 
-# --- A CLASSE ABAIXO HAVIA SIDO APAGADA ACIDENTALMENTE ---
 class ItemVenda(models.Model):
     venda = models.ForeignKey(Venda, on_delete=models.CASCADE, related_name="itens_venda")
     produto = models.ForeignKey(Produto, on_delete=models.CASCADE)

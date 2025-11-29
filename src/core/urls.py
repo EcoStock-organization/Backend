@@ -4,8 +4,8 @@ from .views import (
     DashboardMetricsView, 
     RecentSalesView, 
     StockAlertsView,
-    SalesChartDataView,      # Nova
-    CategoryPerformanceView  # Nova
+    SalesChartDataView,      
+    CategoryPerformanceView  
 )
 
 urlpatterns = [
@@ -17,7 +17,6 @@ urlpatterns = [
     path('api/usuarios/', include('usuario.urls')),
     path('api/relatorios/', include('relatorios.urls')),
     
-    # Dashboard
     path('api/dashboard/', DashboardMetricsView.as_view(), name='dashboard-metrics'),
     path('api/dashboard/recent-sales/', RecentSalesView.as_view(), name='dashboard-recent-sales'),
     path('api/dashboard/alerts/', StockAlertsView.as_view(), name='dashboard-alerts'),

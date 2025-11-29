@@ -37,7 +37,7 @@ class TestesAPIFilial(APITestCase):
         self.assertEqual(response.data[0]["nome"], "Filial Teste Setup")
 
     def test_listar_filiais_nao_autenticado_falha(self):
-        self.client.credentials()  # Limpa a autenticação
+        self.client.credentials()
         url = reverse("filial:filial-lista-criar")
         response = self.client.get(url)
 

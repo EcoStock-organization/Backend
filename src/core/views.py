@@ -17,7 +17,6 @@ from venda.models import Venda, ItemVenda
 from estoque.models import ItemEstoque
 from filial.models import Filial
 
-# Serializers
 from venda.serializers import VendaSerializer
 from estoque.serializers import ItemEstoqueSerializer
 
@@ -57,7 +56,6 @@ class StockAlertsView(generics.ListAPIView):
     def get_queryset(self):
         return ItemEstoque.objects.filter(quantidade_atual__lte=F('quantidade_minima_estoque'))
 
-# --- RELATÓRIOS ---
 
 class SalesChartDataView(APIView):
     permission_classes = [IsAuthenticated]
@@ -95,7 +93,6 @@ class CategoryPerformanceView(APIView):
 
     def get(self, request):
         try:
-            # CORREÇÃO CRÍTICA: output_field=FloatField() é necessário ao multiplicar Decimal por Float
             category_data = ItemVenda.objects.filter(
                 venda__status='FINALIZADA'
             ).values(

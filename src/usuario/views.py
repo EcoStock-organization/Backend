@@ -15,27 +15,19 @@ class IsLocalAdmin(permissions.BasePermission):
             return False
 
 class CriarUsuarioView(generics.CreateAPIView):
-    """
-    View simplificada. A lógica de criação (Auth + DB Local) 
-    está inteiramente encapsulada no UsuarioCompletoSerializer.
-    """
     queryset = PerfilUsuario.objects.all()
     serializer_class = UsuarioCompletoSerializer
-    permission_classes = [IsAuthenticated] # Ou [IsLocalAdmin] se apenas admin puder criar
+    permission_classes = [IsAuthenticated]
 
-# --- CORREÇÃO AQUI ---
-# Mudamos de RetrieveDestroyAPIView para RetrieveUpdateDestroyAPIView
 class DetalheUsuarioView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PerfilUsuario.objects.all()
     serializer_class = UsuarioCompletoSerializer
     permission_classes = [IsLocalAdmin]
 
     def perform_destroy(self, instance):
-        # Tenta deletar no Auth Service ao deletar localmente
         try:
             AuthService.deletar_usuario_auth(instance.usuario_id_auth)
         except Exception:
-            # Logar erro se necessário, mas não impedir a deleção local
             pass
         instance.delete()
 

@@ -16,7 +16,6 @@ class VendaViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Retorna vendas do usuário logado (para o PDV)
         return Venda.objects.filter(usuario_id=self.request.user.id)
 
     def perform_create(self, serializer):
@@ -54,7 +53,6 @@ class VendaViewSet(viewsets.ModelViewSet):
         except ValueError:
              return Response({"detail": "Qtd deve ser maior que zero."}, status=status.HTTP_400_BAD_REQUEST)
 
-        # Valida Estoque
         try:
             item_estoque = ItemEstoque.objects.get(filial=venda.filial, produto=item_venda.produto)
             if item_estoque.quantidade_atual < nova_quantidade:

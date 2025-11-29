@@ -49,7 +49,6 @@ class AdicionarItemVendaSerializer(serializers.Serializer):
         produto = item_estoque.produto
 
         with transaction.atomic():
-            # 1. Cria ou recupera o item na venda
             item_venda, created = ItemVenda.objects.get_or_create(
                 venda=venda,
                 produto=produto,
@@ -59,11 +58,9 @@ class AdicionarItemVendaSerializer(serializers.Serializer):
                 }
             )
             
-            # 2. Atualiza a quantidade
             item_venda.quantidade_vendida += quantidade
             item_venda.save()
             
-            # 3. Recalcula o total da venda
             venda.calcular_valor_total()
             
             return item_venda
