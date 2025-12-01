@@ -8,7 +8,7 @@ class FilialListCreateView(generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return Filial.objects.filter(esta_ativa=True).annotate(
+        return Filial.objects.all().annotate(
             total_produtos=Count('itens_estoque', distinct=True),
             total_vendas=Count('venda', filter=Q(venda__status='FINALIZADA'), distinct=True)
         )

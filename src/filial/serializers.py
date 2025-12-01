@@ -12,4 +12,4 @@ class FilialSerializer(serializers.ModelSerializer):
             "estado", "gerente_id", "esta_ativa",
             "total_produtos", "total_vendas"
         ]
-        read_only_fields = ["esta_ativa"]
+        read_only_fields = []
