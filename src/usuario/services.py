@@ -41,3 +41,34 @@ class AuthService:
                 
         except requests.exceptions.RequestException as e:
             raise APIException(detail=f"Falha de conexão com Auth: {str(e)}")
+        
+    @staticmethod
+    def atualizar_usuario_auth(usuario_id_auth, data):
+        url = f"{AUTH_SERVICE_URL}/users/{usuario_id_auth}/"
+        
+        payload = {}
+        if 'username' in data: payload['username'] = data['username']
+        if 'email' in data: payload['email'] = data['email']
+        if 'password' in data: payload['password'] = data['password']
+        if 'is_active' in data: payload['is_active'] = data['is_active']
+
+        if not payload:
+            return True
+
+        try:
+            response = requests.patch(url, json=payload)
+
+            if response.status_code == 200:
+                return response.json()
+            
+            if response.status_code == 400:
+                try:
+                    erro_msg = response.json()
+                except:
+                    erro_msg = response.text
+                raise ValidationError(detail=erro_msg)
+            
+            raise APIException(detail=f"Erro ao atualizar no Auth: {response.text}")
+                
+        except requests.exceptions.RequestException as e:
+            raise APIException(detail=f"Falha de conexão com Auth: {str(e)}")

@@ -6,7 +6,8 @@ services:
     container_name: django_backend
     command: >
       sh -c "
-        echo 'Aguardando o banco de dados ficar pronto...'
+        echo 'Banco OK! Rodando migrações...'
+        python src/manage.py migrate
         echo '--- Executando Suíte de Testes ---' &&
         python src/manage.py test produto filial estoque venda &&
         echo '--- Testes Concluídos (OK) ---' &&

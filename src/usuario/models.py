@@ -11,6 +11,7 @@ class PerfilUsuario(models.Model):
     usuario_id_auth = models.IntegerField(unique=True, help_text="ID do usuário no serviço de Autenticação")
     
     nome_completo = models.CharField(max_length=255)
+    email = models.EmailField(max_length=255, null=True, blank=True)
     cpf = models.CharField(max_length=14, unique=True)
     cargo = models.CharField(max_length=20, choices=Cargo.choices, default=Cargo.GERENTE)
     
